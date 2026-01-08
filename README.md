@@ -17,6 +17,14 @@
 
 ---
 
+## 🔥 News
+
+
+- **[01/08/2026]** We've set up a Discord server and WeChat group to make it easier to collaborate and exchange ideas on this project. Welcome to join the Group to share your thoughts, ask questions, or contribute your ideas! 🔥 Join our [Discord](https://discord.gg/86gKQ8AW) and [WeChat Group](fig/wechat_logo.png) Now!
+- **[01/03/2026]** SimpleMem paper was released on [arXiv](https://arxiv.org/abs/2601.02553)!
+
+---
+
 ## 📑 Table of Contents
 
 - [🌟 Overview](#-overview)
@@ -334,8 +342,5 @@ We would like to thank the following projects and teams:
 - 🔍 **Embedding Model**: [Qwen3-Embedding](https://github.com/QwenLM/Qwen) - State-of-the-art retrieval performance
 - 🗄️ **Vector Database**: [LanceDB](https://lancedb.com/) - High-performance columnar storage
 - 📊 **Benchmark**: [LoCoMo](https://github.com/snap-research/locomo) - Long-context memory evaluation framework
-
-
-
 
 </div>
