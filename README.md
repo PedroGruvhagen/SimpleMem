@@ -9,6 +9,8 @@
 
 [![Project Page](https://img.shields.io/badge/🎬_INTERACTIVE_DEMO-Visit_Our_Website-FF6B6B?style=for-the-badge&labelColor=FF6B6B&color=4ECDC4&logoColor=white)](https://aiming-lab.github.io/SimpleMem-Page)
 
+[![PyPI version](https://img.shields.io/pypi/v/simplemem?style=flat-square&color=blue)](https://pypi.org/project/simplemem/)
+[![Python](https://img.shields.io/pypi/pyversions/simplemem?style=flat-square)](https://pypi.org/project/simplemem/)
 [![Paper](https://img.shields.io/badge/📄_Paper-arXiv-b31b1b?style=flat-square)](https://arxiv.org/abs/2601.02553)
 [![GitHub](https://img.shields.io/badge/GitHub-SimpleMem-181717?logo=github&style=flat-square)](https://github.com/aiming-lab/SimpleMem)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
@@ -211,33 +213,62 @@ $$k_{dyn} = \lfloor k_{base} \cdot (1 + \delta \cdot C_q) \rfloor$$
 ## 📦 Installation
 
 ### 📋 Requirements
-- 🐍 Python 3.10
+- 🐍 Python 3.10+
 - 🔑 OpenAI-compatible API (OpenAI, Qwen, Azure OpenAI, etc.)
 
-### 🛠️ Setup
+### 🚀 Quick Install (PyPI)
+
+```bash
+# Install from PyPI
+pip install simplemem
+
+# With GPU support (for faster embeddings)
+pip install simplemem[gpu]
+
+# For development
+pip install simplemem[dev]
+```
+
+### 🛠️ Install from Source
 
 ```bash
 # 📥 Clone repository
 git clone https://github.com/aiming-lab/SimpleMem.git
 cd SimpleMem
 
-# 📦 Install dependencies
-pip install -r requirements.txt
+# 📦 Install in editable mode
+pip install -e .
 
-# ⚙️ Configure API settings
-cp config.py.example config.py
-# Edit config.py with your API key and preferences
+# Or install dependencies only
+pip install -r requirements.txt
 ```
 
-### ⚙️ Configuration Example
+### ⚙️ Configuration
+
+SimpleMem uses **environment variables** for configuration:
+
+```bash
+# Required: Set your OpenAI API key
+export OPENAI_API_KEY="your-api-key"
+
+# Optional: Custom API endpoint (for Qwen, Azure, etc.)
+export OPENAI_BASE_URL="https://api.example.com/v1"
+
+# Optional: Override model settings
+export SIMPLEMEM_MODEL="gpt-4.1-mini"
+export SIMPLEMEM_EMBEDDING_MODEL="Qwen/Qwen3-Embedding-0.6B"
+```
+
+Or configure programmatically:
 
 ```python
-# config.py
-OPENAI_API_KEY = "your-api-key"
-OPENAI_BASE_URL = None  # or custom endpoint for Qwen/Azure
+from simplemem import set_config
 
-LLM_MODEL = "gpt-4.1-mini"
-EMBEDDING_MODEL = "Qwen/Qwen3-Embedding-0.6B"  # State-of-the-art retrieval
+set_config(
+    openai_api_key="your-api-key",
+    llm_model="gpt-4.1-mini",
+    embedding_model="Qwen/Qwen3-Embedding-0.6B"
+)
 ```
 
 ---
@@ -247,7 +278,7 @@ EMBEDDING_MODEL = "Qwen/Qwen3-Embedding-0.6B"  # State-of-the-art retrieval
 ### 🎓 Basic Usage
 
 ```python
-from main import SimpleMemSystem
+from simplemem import SimpleMemSystem
 
 # 🚀 Initialize system
 system = SimpleMemSystem(clear_db=True)
@@ -272,6 +303,8 @@ print(answer)
 For large-scale dialogue processing, enable parallel mode:
 
 ```python
+from simplemem import SimpleMemSystem
+
 system = SimpleMemSystem(
     clear_db=True,
     enable_parallel_processing=True,  # ⚡ Parallel memory building

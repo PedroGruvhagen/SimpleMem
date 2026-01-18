@@ -84,3 +84,15 @@ test_results/
 *.pt
 *.pth
 *.onnx
+
+# Build artifacts
+*.egg-info/
+.eggs/
+
+# Type checking
+.mypy_cache/
+.ruff_cache/
+
+# Tests
+tests/test_lancedb/
+docs/

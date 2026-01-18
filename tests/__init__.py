@@ -1,0 +1,1 @@
+"""SimpleMem test suite"""
