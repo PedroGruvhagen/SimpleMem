@@ -223,12 +223,13 @@ def create_system(
 
 
 if __name__ == "__main__":
-    # Quick test with Qwen3 integration
-    print("🚀 Running SimpleMem Quick Test with Qwen3...")
+    # Quick test - auto-detects provider from environment
+    import config
+    print(f"🚀 Running SimpleMem Quick Test (Provider: {config._PROVIDER})...")
 
     system = create_system(clear_db=True)
     print(f"📌 Using embedding model: {system.memory_builder.vector_store.embedding_model.model_name}")
-    print(f"📌 Model type: {system.memory_builder.vector_store.embedding_model.model_type}")
+    print(f"📌 Embedding dimension: {system.memory_builder.vector_store.embedding_model.dimension}")
 
     # Add some test dialogues
     system.add_dialogue("Alice", "Bob, let's meet at Starbucks tomorrow at 2pm to discuss the new product", "2025-11-15T14:30:00")
@@ -253,4 +254,3 @@ if __name__ == "__main__":
     print(f"Answer: {answer}")
     
     print("\n✅ Quick test completed!")
-    print("\n💡 To run comprehensive tests: python test_qwen3_integration.py")

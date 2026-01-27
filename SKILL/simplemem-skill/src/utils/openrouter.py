@@ -1,6 +1,11 @@
 """
-OpenRouter Client - Unified interface for LLM and Embedding via OpenRouter API
-Supports both synchronous and async operations
+Unified API Client - Interface for LLM and Embedding operations
+Supports both OpenRouter and OpenAI APIs through configuration.
+
+- OpenRouter: Use base_url="https://openrouter.ai/api/v1" with sk-or- keys
+- OpenAI: Use base_url="https://api.openai.com/v1" with sk- or sk-proj- keys
+
+Synchronous implementation optimized for Claude Skills.
 """
 
 import json
@@ -10,8 +15,13 @@ from typing import List, Dict, Any, Optional
 
 class OpenRouterClient:
     """
-    Synchronous OpenRouter API client for LLM and Embedding operations.
-    Simpler and more direct than the MCP async version.
+    Unified API client for LLM and Embedding operations.
+    Supports both OpenRouter and OpenAI APIs through configuration.
+
+    OpenRouter: Use base_url="https://openrouter.ai/api/v1" with sk-or- keys
+    OpenAI: Use base_url="https://api.openai.com/v1" with sk- or sk-proj- keys
+
+    Synchronous implementation optimized for Claude Skills.
     """
 
     def __init__(
@@ -23,14 +33,14 @@ class OpenRouterClient:
         app_name: str = "SimpleMem Skill",
     ):
         """
-        Initialize OpenRouter client
-        
+        Initialize API client
+
         Args:
-            api_key: OpenRouter API key (starts with sk-or-)
-            base_url: OpenRouter API base URL
+            api_key: API key (OpenRouter: sk-or-, OpenAI: sk- or sk-proj-)
+            base_url: API base URL (OpenRouter or OpenAI)
             llm_model: Model for chat completions
             embedding_model: Model for embeddings
-            app_name: Application name for tracking
+            app_name: Application name for tracking (OpenRouter only)
         """
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
@@ -41,12 +51,19 @@ class OpenRouterClient:
         # Use requests for synchronous HTTP calls
         import requests
         self.session = requests.Session()
-        self.session.headers.update({
+
+        # Base headers for all providers
+        headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
-            "HTTP-Referer": "http://simplemem.cloud",
-            "X-Title": self.app_name,
-        })
+        }
+
+        # OpenRouter-specific headers (only for sk-or- keys)
+        if self.api_key and self.api_key.startswith("sk-or-"):
+            headers["HTTP-Referer"] = "http://simplemem.cloud"
+            headers["X-Title"] = self.app_name
+
+        self.session.headers.update(headers)
 
     def chat_completion(
         self,
@@ -120,30 +137,50 @@ class OpenRouterClient:
 
     def verify_api_key(self) -> tuple[bool, Optional[str]]:
         """
-        Verify that the API key is valid
+        Verify that the API key is valid.
+        Works with both OpenRouter (sk-or-*) and OpenAI (sk-*, sk-proj-*) keys.
 
         Returns:
             Tuple of (is_valid, error_message)
         """
-        # Check key format first - OpenRouter keys start with sk-or-
-        if not self.api_key or not self.api_key.startswith("sk-or-"):
-            return False, "Invalid key format. OpenRouter API keys start with 'sk-or-'. Get yours at openrouter.ai/keys"
+        if not self.api_key:
+            return False, "API key is required"
 
         try:
-            url = f"{self.base_url}/auth/key"
-            response = self.session.get(url, timeout=10)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get("data"):
-                    return True, None
-                return False, "Invalid API key"
-            elif response.status_code == 401:
-                return False, "Invalid or expired API key"
-            elif response.status_code == 403:
-                return False, "API key access denied"
+            # OpenRouter validation: use /auth/key endpoint
+            if self.api_key.startswith("sk-or-"):
+                url = f"{self.base_url}/auth/key"
+                response = self.session.get(url, timeout=10)
+
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get("data"):
+                        return True, None
+                    return False, "Invalid API key"
+                elif response.status_code == 401:
+                    return False, "Invalid or expired API key"
+                elif response.status_code == 403:
+                    return False, "API key access denied"
+                else:
+                    return False, f"API error: {response.status_code}"
+
+            # OpenAI validation: use /models endpoint (no /auth/key)
             else:
-                return False, f"API error: {response.status_code}"
+                url = f"{self.base_url}/models"
+                response = self.session.get(url, timeout=10)
+
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get("data") and len(data["data"]) > 0:
+                        return True, None
+                    return False, "API key valid but no models accessible"
+                elif response.status_code == 401:
+                    return False, "Invalid OpenAI API key. Get yours at platform.openai.com/api-keys"
+                elif response.status_code == 403:
+                    return False, "API key access denied"
+                else:
+                    return False, f"API error: {response.status_code}"
+
         except Exception as e:
             return False, f"Connection error: {str(e)}"
 
