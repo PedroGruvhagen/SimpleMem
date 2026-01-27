@@ -17,7 +17,7 @@ import json
 import os
 import sys
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Ensure the skill's `src/` folder is on sys.path so `from main import SimpleMemSystem` works
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -48,7 +48,7 @@ def build_system(db_path: str = DEFAULT_DB, table_name: str = None, clear_db: bo
 
 def cmd_add(args):
     system = build_system(table_name=args.table_name, clear_db=False)
-    timestamp = args.timestamp or datetime.utcnow().isoformat(timespec="seconds")
+    timestamp = args.timestamp or datetime.now(timezone.utc).isoformat(timespec="seconds")
     system.add_dialogue(args.speaker, args.content, timestamp=timestamp)
     # Ensure remaining buffer processed immediately
     system.finalize()
