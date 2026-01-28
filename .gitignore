@@ -90,3 +90,69 @@ docs/other
 
 # Task management files
 .tasks/
+
+# Security - Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+id_rsa
+id_ed25519
+*.pub
+
+# Security - Credentials files
+.aws/
+.azure/
+.gcp/
+credentials
+credentials.json
+service-account*.json
+*-credentials.json
+*_credentials.json
+
+# Security - Secret files
+*.secret
+*.secrets
+secrets.yaml
+secrets.yml
+secrets.json
+
+# Security - Token files
+*.token
+.npmrc
+.pypirc
+
+# Backup and temporary files
+*.bak
+*.backup
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# OS-specific
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Docker
+docker-compose.override.yml
+.docker/
+
+# Node.js (if applicable)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# LaunchAgent (local macOS config)
+*.plist
+
+# Local configuration overrides
+local.py
+local_settings.py
+*.local.py
+*.local.json
