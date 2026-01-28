@@ -67,6 +67,8 @@ config.py
 *.sqlite
 *.sqlite3
 lancedb_data/
+data/
+MCP/data/
 
 # Log files
 *.log
