@@ -1,5 +1,14 @@
 """External integrations for SimpleMem"""
 
-from .openrouter import OpenRouterClient
+# OpenAI integration (primary)
+from .openai import OpenAIClient, OpenAIClientManager
 
-__all__ = ["OpenRouterClient"]
+# OpenRouter integration (kept for backward compatibility)
+from .openrouter import OpenRouterClient, OpenRouterClientManager
+
+__all__ = [
+    "OpenAIClient",
+    "OpenAIClientManager",
+    "OpenRouterClient",
+    "OpenRouterClientManager",
+]

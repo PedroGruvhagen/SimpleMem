@@ -14,7 +14,7 @@ from datetime import datetime
 import uuid
 
 from ..auth.models import MemoryEntry, Dialogue
-from ..integrations.openrouter import OpenRouterClient
+from ..integrations.openai import OpenAIClient
 from ..database.vector_store import MultiTenantVectorStore
 
 
@@ -26,7 +26,7 @@ class MemoryBuilder:
 
     def __init__(
         self,
-        openrouter_client: OpenRouterClient,
+        openrouter_client: OpenAIClient,  # Parameter name kept for compatibility
         vector_store: MultiTenantVectorStore,
         table_name: str,
         window_size: int = 40,  # Max dialogues per LLM call

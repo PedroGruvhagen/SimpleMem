@@ -14,7 +14,7 @@ from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 
 from ..auth.models import MemoryEntry
-from ..integrations.openrouter import OpenRouterClient
+from ..integrations.openai import OpenAIClient
 from ..database.vector_store import MultiTenantVectorStore
 
 
@@ -37,7 +37,7 @@ class Retriever:
 
     def __init__(
         self,
-        openrouter_client: OpenRouterClient,
+        openrouter_client: OpenAIClient,  # Parameter name kept for compatibility
         vector_store: MultiTenantVectorStore,
         table_name: str,
         semantic_top_k: int = 25,

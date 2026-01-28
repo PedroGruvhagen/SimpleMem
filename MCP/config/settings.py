@@ -45,11 +45,17 @@ class Settings:
         "./data/users.db"
     ))
 
-    # OpenRouter Configuration
-    openrouter_base_url: str = "https://openrouter.ai/api/v1"
-    llm_model: str = "openai/gpt-4.1-mini"
-    embedding_model: str = "qwen/qwen3-embedding-4b"
-    embedding_dimension: int = 2560  # Custom embedding dimension
+    # OpenAI Configuration
+    # Note: Variable name kept as openrouter_base_url for backward compatibility
+    openrouter_base_url: str = "https://api.openai.com/v1"
+    llm_model: str = "gpt-4.1-mini"  # OpenAI model (no prefix needed)
+    embedding_model: str = "text-embedding-3-small"  # 1536 dimensions, cost-effective
+    embedding_dimension: int = 1536  # Must match embedding model output dimension
+
+    # OpenAI API Key Fallback (for single-user mode without web UI registration)
+    openai_api_key_fallback: str = field(default_factory=lambda: os.getenv(
+        "OPENAI_API_KEY", ""
+    ))
 
     # Memory Building Configuration
     window_size: int = 20

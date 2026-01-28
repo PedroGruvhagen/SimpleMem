@@ -34,7 +34,7 @@ from .auth.token_manager import TokenManager
 from .auth.models import User
 from .database.user_store import UserStore
 from .database.vector_store import MultiTenantVectorStore
-from .integrations.openrouter import OpenRouterClient, OpenRouterClientManager
+from .integrations.openai import OpenAIClient, OpenAIClientManager
 from .mcp_handler import MCPHandler
 
 import sys
@@ -100,8 +100,8 @@ token_manager = TokenManager(
     encryption_key=settings.encryption_key,
     expiration_days=settings.jwt_expiration_days,
 )
-client_manager = OpenRouterClientManager(
-    base_url=settings.openrouter_base_url,
+client_manager = OpenAIClientManager(
+    base_url=settings.openrouter_base_url,  # Now points to OpenAI API
     llm_model=settings.llm_model,
     embedding_model=settings.embedding_model,
 )
@@ -278,12 +278,12 @@ app.add_middleware(
 
 @app.post("/api/auth/register", response_model=RegisterResponse)
 async def register(request: RegisterRequest):
-    """Register a new user with OpenRouter API key"""
+    """Register a new user with OpenAI API key"""
     try:
-        # Validate API key with OpenRouter
-        client = OpenRouterClient(
-            api_key=request.openrouter_api_key,
-            base_url=settings.openrouter_base_url,
+        # Validate API key with OpenAI
+        client = OpenAIClient(
+            api_key=request.openrouter_api_key,  # Field name kept for DB compatibility
+            base_url=settings.openrouter_base_url,  # Now points to OpenAI
         )
         is_valid, error = await client.verify_api_key()
         await client.close()
@@ -291,7 +291,7 @@ async def register(request: RegisterRequest):
         if not is_valid:
             return RegisterResponse(
                 success=False,
-                error=f"Invalid OpenRouter API key: {error}",
+                error=f"Invalid OpenAI API key: {error}",
             )
 
         # Create user
